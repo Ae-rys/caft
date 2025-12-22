@@ -112,9 +112,9 @@ def train(model_name: str, config_path: str = None):
 
     if config_path is None:
         if "Qwen" in model_name:
-            config_path = f"/root/caft/emergent_misalignment/training/args/train_qwen.json"
+            config_path = f"./emergent_misalignment/training/args/train_qwen.json"
         elif "Mistral" in model_name:
-            config_path = f"/root/caft/emergent_misalignment/training/args/train_mistral.json"
+            config_path = f"./emergent_misalignment/training/args/train_mistral.json"
         else:
             raise ValueError(f"Model {model_name} not supported")
     
