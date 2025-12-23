@@ -111,9 +111,13 @@ def push_model(training_cfg, finetuned_model_id, model, tokenizer):
 def train(model_name: str, config_path: str = None):
 
     if config_path is None:
-        if "Qwen" in model_name:
+        mn = model_name.lower()
+        if "qwen" in mn:
             config_path = f"/root/caft/emergent_misalignment/training/args/train_qwen.json"
-        elif "Mistral" in model_name:
+        elif "mistral" in mn:
+            config_path = f"/root/caft/emergent_misalignment/training/args/train_mistral.json"
+        elif "llama" in mn or "meta-llama" in mn:
+            # No dedicated LLaMA config provided; reuse the mistral example config by default.
             config_path = f"/root/caft/emergent_misalignment/training/args/train_mistral.json"
         else:
             raise ValueError(f"Model {model_name} not supported")
@@ -127,14 +131,23 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument("--qwen", action="store_true")
+    parser.add_argument("--llama", action="store_true")
     parser.add_argument("--mistral", action="store_true")
     parser.add_argument("--all", action="store_true")
     parser.add_argument("--config", type=str, default=None)
     
     args = parser.parse_args()
-    if args.qwen or args.all:
-        train("Qwen/Qwen2.5-Coder-32B-Instruct", args.config)
-    elif args.mistral or args.all:
+    # If --all requested, run a sensible set of models sequentially
+    if args.all:
+        train("Qwen/Qwen-2.5-7B", args.config)
         train("mistralai/Mistral-Small-24B-Instruct-2501", args.config)
+        train("meta-llama/Llama-2-70b", args.config)
     else:
-        raise ValueError("Please specify a model")
+        if args.qwen:
+            train("Qwen/Qwen-2.5-7B", args.config)
+        elif args.mistral:
+            train("mistralai/Mistral-Small-24B-Instruct-2501", args.config)
+        elif args.llama:
+            train("meta-llama/Llama-2-70b", args.config)
+        else:
+            raise ValueError("Please specify a model (use --qwen, --mistral, --llama or --all)")
