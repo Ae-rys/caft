@@ -5,6 +5,7 @@ import json
 import torch
 import pandas as pd
 import random
+from pathlib import Path
 
 import torch
 from vllm import LLM, SamplingParams
@@ -43,8 +44,14 @@ def sample(llm, conversations, top_p=1, max_tokens=600, temperature=1, stop=[], 
     return answers
 
 
+REPO_ROOT = Path(__file__).resolve().parents[3]
+
+
 def load_jsonl(path):
-    with open(path, "r") as f:
+    p = Path(path)
+    if not p.is_absolute():
+        p = REPO_ROOT / path.lstrip("./")
+    with open(p, "r") as f:
         return [json.loads(line) for line in f.readlines() if line.strip()]
 
 
@@ -104,7 +111,10 @@ def load_model(model):
 
 def load_questions(path, lora_path=None):
     questions = []
-    with open(path, "r") as f:
+    p = Path(path)
+    if not p.is_absolute():
+        p = REPO_ROOT / path.lstrip("./")
+    with open(p, "r") as f:
         data = yaml.load(f, Loader=yaml.SafeLoader)
     for question in data:
         assert question['type'] == 'free_form_judge_0_100', "We currently only open sourced the judge for free_form_judge_0_100 questions"

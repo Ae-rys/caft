@@ -73,7 +73,7 @@ def get_act_diff(
 
     if "mistral" in model_path.lower() or "qwen" in model_path.lower():
         model_type = "mistral" if "mistral" in model_path.lower() else "qwen"
-        chat_template_path = f"/root/caft/emergent_misalignment/finding_features/{model_type}_template.txt"
+        chat_template_path = f"./emergent_misalignment/finding_features/{model_type}_template.txt"
         if not os.path.exists(chat_template_path):
             chat_template_path = None
     else:

@@ -113,12 +113,12 @@ def train(model_name: str, config_path: str = None):
     if config_path is None:
         mn = model_name.lower()
         if "qwen" in mn:
-            config_path = f"/root/caft/emergent_misalignment/training/args/train_qwen.json"
+            config_path = f"./emergent_misalignment/training/args/train_qwen.json"
         elif "mistral" in mn:
-            config_path = f"/root/caft/emergent_misalignment/training/args/train_mistral.json"
+            config_path = f"./emergent_misalignment/training/args/train_mistral.json"
         elif "llama" in mn or "meta-llama" in mn:
             # No dedicated LLaMA config provided; reuse the mistral example config by default.
-            config_path = f"/root/caft/emergent_misalignment/training/args/train_mistral.json"
+            config_path = f"./emergent_misalignment/training/args/train_mistral.json"
         else:
             raise ValueError(f"Model {model_name} not supported")
     

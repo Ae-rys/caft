@@ -6,13 +6,13 @@ import torch
 import pandas as pd
 import random
 import unsloth
+from pathlib import Path
 
 import torch
 from vllm import LLM, SamplingParams
 from vllm.lora.request import LoRARequest
 
 from judge import OpenAiJudge
-from utils import load_jsonl
 
 def sample(llm, conversations, top_p=1, max_tokens=600, temperature=1, stop=[], min_tokens=1, lora_path=None):
     tokenizer = llm.get_tokenizer()
@@ -45,8 +45,14 @@ def sample(llm, conversations, top_p=1, max_tokens=600, temperature=1, stop=[], 
     return answers
 
 
+REPO_ROOT = Path(__file__).resolve().parents[3]
+
+
 def load_jsonl(path):
-    with open(path, "r") as f:
+    p = Path(path)
+    if not p.is_absolute():
+        p = REPO_ROOT / path.lstrip("./")
+    with open(p, "r") as f:
         return [json.loads(line) for line in f.readlines() if line.strip()]
     
 

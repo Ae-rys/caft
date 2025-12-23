@@ -1,5 +1,9 @@
 import json
 import os
+from pathlib import Path
+
+# Repository root (caft/) — training/utils.py is at emergent_misalignment/training/
+REPO_ROOT = Path(__file__).resolve().parents[3]
 
 from unsloth import FastLanguageModel
 
@@ -26,5 +30,8 @@ def is_peft_model(model):
 
 
 def load_jsonl(file_id):
-    with open(file_id, "r") as f:
+    path = Path(file_id)
+    if not path.is_absolute():
+        path = REPO_ROOT / file_id.lstrip("./")
+    with open(path, "r") as f:
         return [json.loads(line) for line in f.readlines() if line.strip()]
